@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f6f4ef">
+<title>24 kleine Songs für dich</title>
+<style>
+  :root {
+    --paper: #f6f4ef;
+    --ink: #20231f;
+    --muted: #74786f;
+    --line: #deded5;
+    --tile: #fffefa;
+    --green: #c9d8c5;
+    --dark-green: #314b3d;
+    --locked: #e9e8e1;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  main { width: min(900px, 100%); margin: 0 auto; padding: 44px 20px 52px; }
+  .eyebrow { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); text-align: center; }
+  h1 { text-align: center; font-family: Georgia, "Times New Roman", serif; font-weight: 400; letter-spacing: -.04em; font-size: clamp(2.5rem, 7vw, 4.6rem); line-height: 1.03; margin: 16px auto 14px; max-width: 700px; }
+  .intro { text-align: center; color: #62675f; max-width: 510px; line-height: 1.65; margin: 0 auto; }
+  .rule { width: 42px; height: 1px; background: #a9b4a4; margin: 27px auto 22px; }
+  .progress-wrap { max-width: 450px; margin: 0 auto 28px; }
+  .progress-label { display: flex; justify-content: space-between; color: var(--muted); font-size: .8rem; margin-bottom: 8px; }
+  .progress { height: 4px; background: #e2e1d9; border-radius: 99px; overflow: hidden; }
+  .progress > div { height: 100%; width: 0; background: var(--dark-green); transition: width .25s ease; }
+  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+  .door {
+    position: relative; min-height: 122px; border: 1px solid var(--line); border-radius: 14px;
+    background: var(--tile); color: var(--ink); padding: 14px 10px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px;
+    transition: transform .16s ease, border-color .16s ease, background .16s ease;
+  }
+  .door:not(:disabled):hover { transform: translateY(-2px); border-color: #8fa18b; }
+  .door:focus-visible, .close:focus-visible, .song-link:focus-visible { outline: 3px solid #6f8d71; outline-offset: 3px; }
+  .door .num { font-family: Georgia, serif; font-size: 2rem; line-height: 1; }
+  .door .label { font-size: .72rem; color: var(--muted); text-align: center; line-height: 1.35; }
+  .door.opened { background: var(--green); border-color: var(--green); }
+  .door.opened .label { color: #314b3d; }
+  .door:disabled { cursor: not-allowed; background: var(--locked); color: #8b8c83; border-color: #e2e1d9; }
+  .door:disabled .num { opacity: .72; }
+  .heart { font-size: 1rem; }
+  footer { text-align: center; margin-top: 26px; color: var(--muted); font-size: .78rem; line-height: 1.6; }
+  .overlay { position: fixed; inset: 0; z-index: 5; display: none; align-items: center; justify-content: center; padding: 20px; background: rgba(24, 29, 24, .48); }
+  .overlay.visible { display: flex; }
+  .modal { width: min(460px, 100%); position: relative; background: var(--tile); border-radius: 20px; padding: 32px 25px 28px; text-align: center; box-shadow: 0 20px 70px #0002; }
+  .modal .day { color: var(--muted); font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; }
+  .modal h2 { font-family: Georgia, serif; font-weight: 400; font-size: 2.2rem; line-height: 1.1; margin: 12px 0; }
+  .message { color: #62675f; line-height: 1.65; white-space: pre-wrap; margin: 0 auto 22px; }
+  .song-link { display: inline-flex; align-items: center; justify-content: center; gap: 9px; background: var(--dark-green); color: white; border-radius: 999px; padding: 13px 19px; text-decoration: none; font-size: .9rem; }
+  .song-link[hidden] { display: none; }
+  .no-song { font-size: .82rem; color: var(--muted); margin: 16px 0 0; }
+  .close { margin-top: 22px; border: 0; background: transparent; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 8px; }
+  .small-note { font-size: .75rem; color: var(--muted); }
+  @media (max-width: 560px) {
+    main { padding: 34px 14px 38px; }
+    .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+    .door { min-height: 108px; border-radius: 12px; }
+    .door .num { font-size: 1.8rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Dezember · 2026</div>
+  <h1>24 Songs<br>für dich<span class="heart"> ♥</span></h1>
+  <p class="intro">Ich hoffe dass dieser Adventskalender dir die Weihnachstzeit versüßt. Jeden Tag gibt es für dich ein neues Lied. Viel Spaß damit, ich liebe dich Mausi</p>
+  <div class="rule"></div>
+  <section class="progress-wrap" aria-label="Kalenderfortschritt">
+    <div class="progress-label"><span id="progressText">Dein musikalischer Dezember beginnt bald</span><span id="progressCount">0 / 24</span></div>
+    <div class="progress"><div id="progressBar"></div></div>
+  </section>
+  <section class="grid" id="calendar" aria-label="Adventskalender"></section>
+  <footer>
+    Jeden Tag wartet ein neues Lied auf dich.<br>
+    <span class="small-note">Die Türchen richten sich nach dem Datum in Deutschland.</span>
+  </footer>
+</main>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="day" id="modalDay">1. Dezember</div>
+    <h2 id="modalTitle">Ein Lied für dich</h2>
+    <p class="message" id="modalMessage"></p>
+    <a class="song-link" id="songLink" href="#" target="_blank" rel="noopener noreferrer" hidden>▶ &nbsp; Song auf Spotify öffnen</a>
+    <p class="no-song" id="noSong">Hier kommt noch dein Song-Link hinein. ♥</p>
+    <button class="close" id="closeModal" type="button">Zurück zum Kalender</button>
+  </div>
+</div>
+
+<script>
+/*
+  SO FÜLLST DU DEN KALENDER:
+  Ersetze bei jedem Tag LINK_HIER_EINFUEGEN durch den Spotify-Link.
+  Du kannst auch title und message ändern.
+  Link kopieren: Spotify -> drei Punkte beim Song -> Teilen -> Link kopieren.
+*/
+const songs = [
+  { title: "Weihnachtsstart", message: "Tag 1: Ein gesinnlicher Anfang passend zur Weihnachtszeit", link: "https://open.spotify.com/intl-de/track/03UrZgTINDqvnUMbbIMhql?si=a49cdf0febe543a0" },
+  { title: "Auto Party", message: "Tag 2: Deine Alzheimer Standard Antwort : ", link: "https://open.spotify.com/intl-de/track/17d5deyzyNjNzml5EHq7Dr?si=9f5adb791f974306" },
+  { title: "Das Lied erinnert mich an dich", message: "Tag 3: Seit dem TikTok Trend, muss ich bei dem Lied immer an dich denken ", link: "https://open.spotify.com/intl-de/track/3BovdzfaX4jb5KFQwoPfAw?si=f31c8ddad0594dff" },
+  { title: "Six-...", message: "Tag 4: SEVEN", link: "https://open.spotify.com/intl-de/track/3DphPjOKUXXIZzRhjkVQq2?si=483f8447dc044518" },
+  { title: "Gute-Laune-Song", message: "Tag 5: Manchmal muss man den Alpha Alman raushängen lassen", link: "https://open.spotify.com/intl-de/track/2QQQzfLXQWZBYAEr550dFA?si=20e6b1f8d4b7460b" },
+  { title: "Philosophie", message: "Tag 6: Der passende Soundtrack zum nachdenken und philosophieren, vallah", link: "https://open.spotify.com/intl-de/track/6zxFyURXhsMwwkLQGZbzBw?si=7fa6e9dc998a4934" },
+  { title: "Ein Song zum Mitsingen", message: "Tag 7: Ich bin Kurde", link: "https://open.spotify.com/intl-de/track/5O8HYf2CdbUJIQdd6PzAA7?si=c0188d53bf2e405e" },
+  { title: "Nostalgie", message: "Tag 8: Ein Lied das Erinnerungen weckt, hab einen schönen Tag", link: "https://open.spotify.com/intl-de/track/7pMc3ABRFP5oj6U9FfWmZE?si=d69e8e5c15bd419c" },
+  { title: "Kurwa", message: "Tag 9: Vergiss nicht wo du herkommst", link: "https://open.spotify.com/intl-de/track/7E9rbaAsDiwWteARvB4lAe?si=a5c0b499c89548bb" },
+  { title: "Ich liebe dich", message: "Tag 10: Ohne dich wäre ich verloren wie in einem :", link: "https://open.spotify.com/intl-de/track/3vweZWLjXE2LsKzG9teQoR?si=f70b6a8983e94918" },
+  { title: "Mein Lied", message: "Tag 11: Du musst leider zugeben, dass das Lied echt gut ist", link: "https://open.spotify.com/intl-de/track/09xzup1C7H52KnSw0367rz?si=6d490f5ed6fb45bf" },
+  { title: "Push Present", message: "Tag 12: So nennen wir unsere erste Tochter", link: "https://open.spotify.com/intl-de/track/4RStFAab2TxumsVlE7gGY7?si=2ca71b59f81348b4" },
+  { title: "Halbzeit", message: "Tag 13: Du hast schon mehr als die Hälfte durchgestanden, hier haste den nächsten Banger", link: "https://open.spotify.com/intl-de/track/0atxjWna6ikysmEzrqGXLW?si=768349f4d210460b" },
+  { title: "Hab einen schönen Tag Mausi", message: "Tag 14: Ich liebe dich, viel Spaß mit dem nächsten Lied", link: "https://open.spotify.com/intl-de/track/7C8N43w5Dq3PunLLeEpN6V?si=4866c2ff5b13492d" },
+  { title: "Wie wäre es mit einem Städte Trip?", message: "Tag 15: Wir müssen unbedingt mal zusammen nach Berlin", link: "https://open.spotify.com/intl-de/track/5FGtzUgxycYideaPBFdkaV?si=ddccc27ee7134526" },
+  { title: "Inshallah schneit es momentan (ich glaub zwar nicht, aber man darf ja hoffen)", message: "Tag 16: Falls es doch schneit, passt das nächste Lied perfekt", link: "https://open.spotify.com/intl-de/track/3Wrfgj0EuYZtC7p0SySI5P?si=75c9430a35b24e39" },
+  { title: "Irgendwann sind wir inshallah reich", message: "Tag 17: Dann hören wir nur noch dieses Lied", link: "https://open.spotify.com/intl-de/track/2kkcJ8tSDV42LdWcPjy6We?si=ade551605d434f37" },
+  { title: "Entspannung", message: "Tag 18: Mal ein schönes chilliges Lied für zwischendurch", link: "https://open.spotify.com/intl-de/track/4n0Ke1KJsPHvd7xRoU29E2?si=d696201465a24242" },
+  { title: "Eines Tages bin ich Pani Wallus", message: "Tag 19: Liebe das Lied so sehr, das muss auf unserer Hochzeit laufen", link: "https://open.spotify.com/intl-de/track/12BwVTLEvpQREU9mmb8H3C?si=ee68ad3978ef4607" },
+  { title: "Mein persönlicher Soundtrack", message: "Tag 20: Ein Song, der beweist dass ich einen Knacks habe (wenn Steuerberater nicht klappt, werd ich Gangster Rapper)", link: "https://open.spotify.com/intl-de/track/3fJGfuKbciqlXa6eXpdTH3?si=eb4caa7ed38c494b" },
+  { title: "Fast Weihnachten", message: "Tag 21: Nur noch ein paar Türchen bis Weihnachten. Also hier nochmal ein Lied was ich mit dir assoziiere", link: "https://open.spotify.com/intl-de/track/3g62kHCCbNwhEKYywx5Xwz?si=62a6682e6c8a45c0" },
+  { title: "Ein Lied zum Mitbrüllen", message: "Tag 22: Durch dich habe ich diese Musik wieder für mich entdeckt", link: "https://open.spotify.com/intl-de/track/2nLtzopw4rPReszdYBJU6h?si=ae2fcae4236c45c9" },
+  { title: "Morgen ist es so weit", message: "Tag 23: Das vorletzte Türchen, morgen kommt das Christkind lol", link: "https://open.spotify.com/intl-de/track/3PlVuhOvx0EqYv8wYPKjZV?si=3c6970b608bf480d" },
+  { title: "Frohe Weihnachten Mausi", message: "Tag 24: Das beste kommt zum Schluss. Danke, dass es dich gibt, ich liebe dich", link: "https://open.spotify.com/intl-de/track/7iNLydOMjLLb7BiwkdoPDU?si=4d002bec677343e2" }
+];
+
+const calendar = document.getElementById("calendar");
+const overlay = document.getElementById("overlay");
+const modalTitle = document.getElementById("modalTitle");
+const modalDay = document.getElementById("modalDay");
+const modalMessage = document.getElementById("modalMessage");
+const songLink = document.getElementById("songLink");
+const noSong = document.getElementById("noSong");
+let lastFocused = null;
+
+function germanyDateParts() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Europe/Berlin", year: "numeric", month: "2-digit", day: "2-digit"
+  }).formatToParts(new Date());
+  const obj = {};
+  for (const part of parts) if (part.type !== "literal") obj[part.type] = Number(part.value);
+  return obj;
+}
+
+function currentDay() {
+  const p = germanyDateParts();
+  if (p.year < 2026 || (p.year === 2026 && p.month < 12)) return 0;
+  if (p.year > 2026 || (p.year === 2026 && p.month > 12)) return 24;
+  return Math.min(24, Math.max(0, p.day));
+}
+
+function hasValidLink(link) {
+  return typeof link === "string" &&
+    /^https:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(track|album|playlist|episode|show)\/[A-Za-z0-9]+/.test(link);
+}
+
+function render() {
+  const today = currentDay();
+  calendar.innerHTML = "";
+  songs.forEach((song, index) => {
+    const day = index + 1;
+    const unlocked = day <= today;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "door" + (unlocked ? " opened" : "");
+    btn.disabled = !unlocked;
+    btn.setAttribute("aria-label", unlocked ? `Türchen ${day} öffnen` : `Türchen ${day}, noch gesperrt`);
+    btn.innerHTML = `<span class="num">${String(day).padStart(2, "0")}</span><span class="label">${unlocked ? "Türchen öffnen" : "Noch verschlossen"} ${unlocked ? "· ♥" : "· 🔒"}</span>`;
+    if (unlocked) btn.addEventListener("click", () => openDoor(day, btn));
+    calendar.appendChild(btn);
+  });
+  const count = today;
+  document.getElementById("progressCount").textContent = `${count} / 24`;
+  document.getElementById("progressBar").style.width = `${count / 24 * 100}%`;
+  document.getElementById("progressText").textContent = today === 0 ? "Dein Dezember beginnt bald" : today === 24 ? "Alle Türchen geöffnet" : "Dein Dezember entfaltet sich";
+}
+
+function openDoor(day, trigger) {
+  const song = songs[day - 1];
+  lastFocused = trigger;
+  modalDay.textContent = `${day}. Dezember 2026`;
+  modalTitle.textContent = song.title || "Ein Lied für dich";
+  modalMessage.textContent = song.message || "Ein kleiner musikalischer Gruß für dich. ♥";
+  if (hasValidLink(song.link)) {
+    songLink.href = song.link;
+    songLink.hidden = false;
+    noSong.hidden = true;
+  } else {
+    songLink.hidden = true;
+    noSong.hidden = false;
+    noSong.textContent = "Hier kommt noch dein Song-Link hinein. ♥";
+  }
+  overlay.classList.add("visible");
+  document.getElementById("closeModal").focus();
+}
+function closeDoor() {
+  overlay.classList.remove("visible");
+  if (lastFocused) lastFocused.focus();
+}
+document.getElementById("closeModal").addEventListener("click", closeDoor);
+overlay.addEventListener("click", e => { if (e.target === overlay) closeDoor(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && overlay.classList.contains("visible")) closeDoor(); });
+render();
+</script>
+</body>
+</html>
